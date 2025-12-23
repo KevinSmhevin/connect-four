@@ -10,16 +10,16 @@ class Board:
 
     def print_board(self) -> None:
         # Print the pretty representation of the board
-        print(f"board: \n\n{self}\n")
+        print(f"Board: \n\n{self}\n")
         
-    def _can_place(self, col: int) -> bool: 
+    def can_place(self, col: int) -> bool: 
         for row in range(5, -1, -1):
             if self._board[row][col] == 0:
                 return True
         return False
     
     def place_disc(self, col: int, disc: int) -> int:
-        if self._can_place(col):
+        if self.can_place(col):
             for row in range(5, -1, -1):
                 if self._board[row][col] == 0:
                     self._board[row][col] = disc
@@ -36,11 +36,11 @@ class Board:
         return True
     
     def check_win(self, disc: int, row: int, col: int) -> bool:
-        if any(
+        if any([
             self._check_horizontal_win(disc, row, col),
             self._check_vertical_win(disc, row, col),
             self._check_diagnol_down_win(disc, row, col),
-            self._check_horizontal_win(disc, row, col)
+            self._check_horizontal_win(disc, row, col)]
         ): return True
         
         return False
@@ -138,27 +138,3 @@ class Board:
         if 0 <= row < self._ROW_LEN and 0 <= col < self._COL_LEN:
             return self._board[row][col]
         
-
-
-# vertical row + 1, row + 2, row + 3, row - 1, row -2, row -3
-# horizontal col + 1, col + 2, col + 3, col -1, col - 2, col - 3
-# diagnol going down row - 1, col +1/-1 
-# diagnol going up row + 1, col +1/-1 
-
-test_board = Board()
-test_board.print_board()
-# test_board.place_disc(2, 1)
-# test_board.place_disc(1, 1)
-# test_board.place_disc(0, 1)
-# test_board.place_disc(3, 1)
-# test_board.print_board()
-# print(test_board._check_horizontal_win(1, 5, 2))
-
-# Minimal checks for check_board_full
-# (top-row check is reliable when using place_disc; direct board mutation can break this invariant)
-assert test_board.check_board_full() is False
-
-# Simulate a full board by filling every top cell and re-check
-for c in range(test_board._COL_LEN):
-	test_board._board[0][c] = 1
-assert test_board.check_board_full() is True
